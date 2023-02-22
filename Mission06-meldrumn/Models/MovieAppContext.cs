@@ -15,15 +15,26 @@ namespace Mission06_meldrumn.Models
         }
 
         public DbSet<ApplicationResponse> Responses { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
+        // Seed Data
         protected override void OnModelCreating(ModelBuilder mb)
         {
+            mb.Entity<Category>().HasData(
+                    new Category { CategoryID = 1, CategoryName = "Action/Adventure"},
+                    new Category { CategoryID = 2, CategoryName = "Comedy"},
+                    new Category { CategoryID = 3, CategoryName = "Drama"},
+                    new Category { CategoryID = 4, CategoryName = "Family"},
+                    new Category { CategoryID = 5, CategoryName = "Horror/Suspense"},
+                    new Category { CategoryID = 6, CategoryName = "Miscellaneous"}
+                );
+
             mb.Entity<ApplicationResponse>().HasData(
 
                 new ApplicationResponse
                 {
                     MovieID = 1,
-                    Category = "Action/Adventure",
+                    CategoryID = 1,
                     Title = "The Avengers",
                     Year = 2012,
                     Director = "Joss Whedon",
@@ -35,7 +46,7 @@ namespace Mission06_meldrumn.Models
                 new ApplicationResponse
                 {
                     MovieID = 2,
-                    Category = "Action/Adventure",
+                    CategoryID = 1,
                     Title = "Tenet",
                     Year = 2020,
                     Director = "Christopher Nolan",
@@ -47,7 +58,7 @@ namespace Mission06_meldrumn.Models
                 new ApplicationResponse
                 {
                     MovieID = 3,
-                    Category = "Action/Adventure",
+                    CategoryID = 1,
                     Title = "Spider-Man: Into the Spider-Verse",
                     Year = 2018,
                     Director = "Peter Ramsey, Bob Persichetti, Rodney Rothman",

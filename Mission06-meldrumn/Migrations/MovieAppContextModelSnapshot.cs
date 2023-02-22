@@ -21,8 +21,8 @@ namespace Mission06_meldrumn.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Category")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Director")
                         .HasColumnType("TEXT");
@@ -47,13 +47,15 @@ namespace Mission06_meldrumn.Migrations
 
                     b.HasKey("MovieID");
 
+                    b.HasIndex("CategoryID");
+
                     b.ToTable("Responses");
 
                     b.HasData(
                         new
                         {
                             MovieID = 1,
-                            Category = "Action/Adventure",
+                            CategoryID = 1,
                             Director = "Joss Whedon",
                             Edited = "No",
                             LentTo = "",
@@ -65,7 +67,7 @@ namespace Mission06_meldrumn.Migrations
                         new
                         {
                             MovieID = 2,
-                            Category = "Action/Adventure",
+                            CategoryID = 1,
                             Director = "Christopher Nolan",
                             Edited = "",
                             LentTo = "",
@@ -77,7 +79,7 @@ namespace Mission06_meldrumn.Migrations
                         new
                         {
                             MovieID = 3,
-                            Category = "Action/Adventure",
+                            CategoryID = 1,
                             Director = "Peter Ramsey, Bob Persichetti, Rodney Rothman",
                             Edited = "No",
                             LentTo = "",
@@ -86,6 +88,61 @@ namespace Mission06_meldrumn.Migrations
                             Title = "Spider-Man: Into the Spider-Verse",
                             Year = (short)2018
                         });
+                });
+
+            modelBuilder.Entity("Mission06_meldrumn.Models.Category", b =>
+                {
+                    b.Property<int>("CategoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CategoryID");
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryID = 1,
+                            CategoryName = "Action/Adventure"
+                        },
+                        new
+                        {
+                            CategoryID = 2,
+                            CategoryName = "Comedy"
+                        },
+                        new
+                        {
+                            CategoryID = 3,
+                            CategoryName = "Drama"
+                        },
+                        new
+                        {
+                            CategoryID = 4,
+                            CategoryName = "Family"
+                        },
+                        new
+                        {
+                            CategoryID = 5,
+                            CategoryName = "Horror/Suspense"
+                        },
+                        new
+                        {
+                            CategoryID = 6,
+                            CategoryName = "Miscellaneous"
+                        });
+                });
+
+            modelBuilder.Entity("Mission06_meldrumn.Models.ApplicationResponse", b =>
+                {
+                    b.HasOne("Mission06_meldrumn.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

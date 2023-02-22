@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Mission06_meldrumn.Models;
 using System;
@@ -11,14 +12,12 @@ namespace Mission06_meldrumn.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private MovieAppContext Context { get; set; }
+        private MovieAppContext daContext { get; set; }
 
         // Constructor
-        public HomeController(ILogger<HomeController> logger, MovieAppContext name)
+        public HomeController(MovieAppContext name)
         {
-            _logger = logger;
-            Context = name;
+            daContext = name;
         }
 
         public IActionResult Index()
@@ -34,22 +33,77 @@ namespace Mission06_meldrumn.Controllers
         [HttpGet]
         public IActionResult MovieForm()
         {
+            ViewBag.Categories = daContext.Categories.ToList();
+
             return View();
+
+            // return View(new ApplicationResponse());
         }
 
         [HttpPost]
         public IActionResult MovieForm(ApplicationResponse ar)
         {
-            Context.Add(ar);
-            Context.SaveChanges(); 
+            if(ModelState.IsValid)
+            {
+                daContext.Add(ar);
+                daContext.SaveChanges(); 
 
-            return View("Confirmation") ;
+                return View("Confirmation") ;
+            }
+            else //If Invalid
+            {
+                ViewBag.Categories = daContext.Categories.ToList();
+
+                return View();
+            }
+
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpGet]
+        public IActionResult MovieList ()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var applications = daContext.Responses
+                .Include(x => x.Category)
+                // Filter Data-  .Where(x => x.Rating == "PG-13")
+                .ToList();
+
+            return View(applications);
+        }
+
+        [HttpGet]
+        public IActionResult Edit (int movieid)
+        {
+            ViewBag.Categories = daContext.Categories.ToList();
+
+            var movie = daContext.Responses.Single(x => x.MovieID == movieid);
+
+            return View("MovieForm", movie);
+        }
+
+        [HttpPost]
+        public IActionResult Edit (ApplicationResponse ar)
+        {
+            daContext.Update(ar);
+            daContext.SaveChanges();
+
+            return RedirectToAction("MovieList");
+        }
+
+        [HttpGet]
+        public IActionResult Delete (int movieid)
+        {
+            var movie = daContext.Responses.Single(x => x.MovieID == movieid);
+
+            return View(movie);
+        }
+
+        [HttpPost]
+        public IActionResult Delete (ApplicationResponse ar)
+        {
+            daContext.Responses.Remove(ar);
+            daContext.SaveChanges();
+
+            return RedirectToAction("MovieList");
         }
     }
 }

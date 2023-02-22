@@ -12,14 +12,23 @@
 
 <div>
     <form method="post">
+
+        <div asp-validation-summary="All"></div>
+
+         @*helps solve duplication error <input asp-for="MovieID" type="hidden"/>*@
         <label asp-for="Category">Category:</label>
-        <select asp-for="Category" required>
-            <option value="Action/Adventure">Action/Adventure</option>
+        <select asp-for="CategoryID" required>
+            <option value="">Select a Category</option>
+            @foreach (Category c in ViewBag.Categories)
+            {
+                <option value="@c.CategoryID">@c.CategoryName</option>
+            }
+            @*<option value="Action/Adventure">Action/Adventure</option>
             <option value="Comedy">Comedy</option>
             <option value="Drama">Drama</option>
             <option value="Family">Family</option>
             <option value="Horror/Suspense">Horror/Suspense</option>
-            <option value="Miscellaneous">Miscellaneous</option>
+            <option value="Miscellaneous">Miscellaneous</option>*@
         </select><br />
 
         <label asp-for="Title">Title:</label>
@@ -33,6 +42,7 @@
 
         <label asp-for="Rating">Rating:</label>
         <select asp-for="Rating" required>
+            <option value="">Select a Category</option>
             <option value="G">G</option>
             <option value="PG">PG</option>
             <option value="PG-13">PG-13</option>
@@ -41,6 +51,7 @@
 
         <label asp-for="Edited">Edited:</label>
         <select asp-for="Edited">
+            <option value="">Select a Category</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
         </select><br />
